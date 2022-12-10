@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#hi
 
 #change the following to "false" to disable changing the default server name and motd
 setserver="true"
