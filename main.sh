@@ -75,7 +75,8 @@ else
       rm -rf java/bungee_command/*
       cp -r /tmp/new/java/bungee_command/. ./java/bungee_command/
       echo ensuring that bungeecord is hosting on the correct port...
-      sed -i 's/host: 0\.0\.0\.0:[0-9]\+/host: 0.0.0.0:1/' java/bungee_command/config.yml
+      sed -i 's/host: 0\.0\.0\.0:[0-9]\+/host: 127.0.0.1:1/' java/bungee_command/config.yml
+      sed -i 's/^server-ip=$/server-ip=127.0.0.1/' java/bukkit_command/server.properties
     fi
     echo updating bukkit server...
     if [ "$emergbukkit" = "true" ]; then
@@ -118,7 +119,7 @@ rm -rf nginx.conf
 sed "s/eaglercraft-server/$REPL_SLUG/" nginx_template.conf > nginx.conf
 nginx -c ~/$REPL_SLUG/nginx.conf -g 'daemon off; pid /tmp/nginx/nginx.pid;' -p /tmp/nginx -e /tmp/nginx/error.log > /tmp/nginx/output.log 2>&1 &
 
-if [ -f "base.repl" ] && ! { [ "$REPL_OWNER" == "ayunami2000" ] && [ "$REPL_SLUG" == "eaglercraft-server" ]; };
+if [ -f "base.repl" ] && ! { [ "$REPL_OWNER" == "python660" ] && [ "$REPL_SLUG" == "bukkitMC" ]; };
 then
   echo resetting world and randomizing seed...
   rm base.repl
@@ -133,12 +134,15 @@ fi
 
 echo starting bukkit...
 cd java/bukkit_command
-java -Xmx512M -Xms512M -jar craftbukkit-1.5.2-R1.0.jar
-cd -
+#java -Xmx512M -Xms512M -jar craftbukkit-1.5.2-R1.0.jar
+java -Xmx400M -Xms400M -jar craftbukkit-1.16.5.jar
+echo hihihi
+#
+#cd -
+#
+#echo killing bungeecord and nginx...
+#nginx -s stop -c ~/$REPL_SLUG/nginx.conf -g 'daemon off; pid /tmp/nginx/nginx.pid;' -p /tmp/nginx -e /tmp/nginx/error.log
+#pkill java
+#pkill nginx
 
-echo killing bungeecord and nginx...
-nginx -s stop -c ~/$REPL_SLUG/nginx.conf -g 'daemon off; pid /tmp/nginx/nginx.pid;' -p /tmp/nginx -e /tmp/nginx/error.log
-pkill java
-pkill nginx
-
-echo done!
+#echo done!
